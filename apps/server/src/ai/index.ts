@@ -5,7 +5,7 @@ import * as ai from "ai";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
-const model = openrouter("anthropic/claude-sonnet-4");
+const model = openrouter("openai/gpt-4.1-mini"); // model for test
 
 type GenerateTextOptions = Omit<Parameters<typeof ai.generateText>[0], "model">;
 

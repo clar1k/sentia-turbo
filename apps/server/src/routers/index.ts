@@ -1,8 +1,8 @@
 import { publicProcedure, router } from "@/lib/trpc";
 import { type } from "arktype";
-import * as ai from "ai";
 import { safeGenerateText } from "@/ai";
 import { ErrorCode, errorResponse } from "@/lib/error";
+import { Tools } from "@/lib/mcp/tools";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -18,6 +18,7 @@ export const appRouter = router({
             content: ctx.input.message,
           },
         ],
+        tools: new Tools().getTools(),
       });
 
       if (text.isErr()) {
