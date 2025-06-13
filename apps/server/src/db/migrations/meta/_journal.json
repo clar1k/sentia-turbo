@@ -15,6 +15,13 @@
       "when": 1749846541305,
       "tag": "0001_create-user-wallet",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749855075907,
+      "tag": "0002_fix-user-id-in-users-wallet",
+      "breakpoints": true
     }
   ]
 }

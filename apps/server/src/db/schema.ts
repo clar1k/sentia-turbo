@@ -11,7 +11,7 @@ export const usersWallet = pgTable('usersWallets', {
   address: text('address').notNull(),
   privateKey: text('privateKey').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
-  user_id: integer('user_id').references(() => users.id),
+  userId: integer('user_id').notNull().references(() => users.id),
 })
 
 export const contextData = pgTable('contexts', {
