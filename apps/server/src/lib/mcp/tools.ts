@@ -1,18 +1,23 @@
-import type { ToolExecutionOptions, ToolSet } from "ai";
-
-function toolExecuteWrapper() {
-  return (args: any, options: ToolExecutionOptions) => 
-}
-
+import { tool, type ToolSet } from "ai";
+import z from "zod";
+import { TransferModule } from "../modules/transfer";
+import { wrapInTag } from "./xml";
 
 export class Tools {
   getTools(): ToolSet  {
     return {
-      [ContextsEnum.defi]: {
-        id: ContextsEnum.defi,
-        type: "function",
-        description: "Returns data, info about protocols, total TVL",
-      } 
+      swap: tool({
+        description: 'Generates send (transfer) transaction by user message',
+        parameters: z.object({
+          recipient: z.string().describe('The transfer receipient. Ethereum address (starts with 0x...) or ENS domain `name.eth`'),
+          amount: z.number().describe('The ETH transfer amount. For example: `0.15`'),
+        }),
+        execute: async (args) => {
+          const txData = new TransferModule().generateTxForUser(args)
+          const txDataString = JSON.stringify(txData, null, 2);
+          return wrapInTag(txDataString, "tx");
+        },
+      })
     }
   }
 }

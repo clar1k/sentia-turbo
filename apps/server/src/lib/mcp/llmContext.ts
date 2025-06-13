@@ -22,7 +22,11 @@ export class LlmContext {
 
     if (options.include.includes(ContextsEnum.defi)) {
       const module = new DeFiModule();
-      result[ContextsEnum.defi] = module.getProtocolsData();
+      result[ContextsEnum.defi] = {
+        protocols: module.getDefaultProtocols(),
+        totalTvl: module.calculateTotalTvl(),
+        chain: module.getChainsTvl(),
+      };
     }
     if (options.include.includes(ContextsEnum.finance)) {
       const module = new PriceModule();
@@ -31,6 +35,10 @@ export class LlmContext {
     }
 
     return result;
+  }
+
+  async saveContext({ data, type }: { data: Record<string, any>, type: ContextsEnum }) {
+    await db.insert(contextData).values({ data, type });
   }
 
   async getContext(options: GetContextOptions) {
@@ -43,6 +51,7 @@ export class LlmContext {
     if (!cachedContext) {
       const generatedContext = await this.generateContext({ include: [options.type] });
       context = generatedContext[options.type];
+      this.saveContext({ data: context, type: options.type });
     } else {
       context = cachedContext.data as ContextType;
     }
