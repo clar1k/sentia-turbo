@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1749806178771,
+      "tag": "0000_chats-context-users",
+      "breakpoints": true
+    }
+  ]
+}

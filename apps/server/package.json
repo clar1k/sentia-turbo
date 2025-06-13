@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "main": "src/main.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "check-types": "tsc --noEmit",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/main.ts --outfile server",
+    "dev": "bun run --hot src/main.ts",
+    "start": "bun run dist/src/main.js",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^1.2.12",
+    "@hono/trpc-server": "^0.3.4",
+    "@openrouter/ai-sdk-provider": "^0.7.1",
+    "@trpc/client": "^11.0.0",
+    "@trpc/server": "^11.0.0",
+    "ai": "^4.3.16",
+    "arktype": "^2.1.20",
+    "axios": "^1.9.0",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.38.4",
+    "hono": "^4.7.6",
+    "neverthrow": "^8.2.0",
+    "pg": "^8.14.1",
+    "redstone-api": "^0.4.13",
+    "zod": "^3.25.16"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.8.11",
+    "typescript": "^5.8.2",
+    "@types/bun": "^1.2.6",
+    "drizzle-kit": "^0.30.5",
+    "@types/pg": "^8.11.11"
+  }
+}
