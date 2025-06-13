@@ -5,6 +5,7 @@ import { appRouter } from "./routers/index";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import {financeRoute} from "@/routers/finance.route";
 
 const app = new Hono();
 
@@ -30,5 +31,7 @@ app.use(
 app.get("/", (c) => {
   return c.text("OK");
 });
+
+app.route('/finance', financeRoute);
 
 export default app;
