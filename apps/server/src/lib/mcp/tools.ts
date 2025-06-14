@@ -17,7 +17,8 @@ export class Tools {
           const txDataString = JSON.stringify(txData, null, 2);
           return wrapInTag(txDataString, "tx");
         },
-      })
+      }),
+      
     }
   }
 }

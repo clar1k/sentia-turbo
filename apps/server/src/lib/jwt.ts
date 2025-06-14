@@ -19,8 +19,6 @@ export const verifyDynamicJWT = async (token: string): Promise<JwtPayload | null
     const signingKey = await client.getSigningKey();
     const publicKey = signingKey.getPublicKey();
 
-    console.log("Public", publicKey);
-    console.log(token)
     const decodedToken: JwtPayload = jwt.verify(token, publicKey, {
       ignoreExpiration: false,
     }) as JwtPayload;

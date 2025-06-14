@@ -5,9 +5,10 @@ import { appRouter } from "./routers/index";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import {financeRoute} from "@/routers/finance.route";
+import { financeRoute } from "@/routers/finance.route";
 import cron from 'node-cron';
-import {finance} from "@/schedule/finance";
+import { finance } from "@/schedule/finance";
+import { news } from "./schedule/news";
 
 const app = new Hono();
 
@@ -34,11 +35,14 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-app.route('/finance', financeRoute);
 
 cron.schedule('0 0 * * *', () => {
-  console.error("START")
-  finance().then(() => (console.log("DONE")));
+  console.log("START");
+  finance().then(() => (console.log("finance DONE")));
+})
+
+cron.schedule('* * * * *', () => {
+  news().then(() => (console.log("news DONE")));
 })
 
 export default app;

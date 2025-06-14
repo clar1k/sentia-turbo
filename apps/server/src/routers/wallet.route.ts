@@ -7,9 +7,6 @@ export const walletRouter = router({
     .input(type({}))
     .mutation(async ({ ctx }) => {
       const userWallet = await getUserWallet({ userId: ctx.user.id }); // FIXME: Temprorary thing
-      if (!userWallet) {
-        console.log("test", userWallet);
-      }
-      return { wallet: userWallet || await createUserWallet({ userId: 1000 }), ok: true };
+      return { wallet: userWallet || await createUserWallet({ userId: ctx.user.id }), ok: true };
     }),
 });

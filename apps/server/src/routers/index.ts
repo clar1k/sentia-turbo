@@ -2,10 +2,9 @@ import { protectedProcedure, publicProcedure, router } from "@/lib/trpc";
 import { type } from "arktype";
 import { safeGenerateText } from "@/ai";
 import { ErrorCode, errorResponse } from "@/lib/error";
-import { Tools } from "@/lib/mcp/tools";
-import z from "zod";
 import { walletRouter } from "./wallet.route";
 import { authRouter } from "./auth.router";
+import { financeRoute } from "./finance.route";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -21,7 +20,6 @@ export const appRouter = router({
             content: ctx.input.message,
           },
         ],
-        tools: new Tools().getTools(),
       });
 
       if (text.isErr()) {
@@ -32,6 +30,7 @@ export const appRouter = router({
     }),
   wallets: walletRouter,
   auth: authRouter,
+  finance: financeRoute,
 });
 
 export type AppRouter = typeof appRouter;
