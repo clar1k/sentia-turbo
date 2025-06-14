@@ -23,6 +23,10 @@ export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: `${import.meta.env.VITE_SERVER_URL}/trpc`,
+      headers: () => {
+        const token = localStorage.getItem("accessToken");
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      },
     }),
   ],
 });

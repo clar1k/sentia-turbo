@@ -26,11 +26,11 @@ export class TransferModule {
     const valueInWei = ethers.parseEther(amount.toString());
 
     const txData = {
-      to: recipient,
-      value: valueInWei.toString(),
-      gasLimit: "21000",
-      chainId: base.id, // Base for now
-    };
+        to: recipient,
+        value: valueInWei.toString(),
+        gasLimit: '21000',
+        chainId: base.id,  // Base for now
+    }
     return txData;
   }
 }

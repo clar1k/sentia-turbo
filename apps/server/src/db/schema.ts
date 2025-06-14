@@ -27,3 +27,9 @@ export const chats = pgTable('chats', {
   messages: jsonb('messages').notNull(),
   metadata: jsonb('jsonb').notNull(),
 })
+
+export const financeSummary = pgTable('finance_summary', {
+  id: serial('id').primaryKey(),
+  createdAt: timestamp('created_at').defaultNow(),
+  messages: text().notNull()
+})
