@@ -5,11 +5,19 @@ import * as ai from "ai";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
-const model = openrouter("openai/gpt-4.1-mini"); // model for test
+const models: Record<string, any> = {
+  GPT_4_MINI: openrouter("openai/gpt-4.1-mini"),
+  SONNET_4: openrouter("anthropic/claude-sonnet-4"),
+};
 
-type GenerateTextOptions = Omit<Parameters<typeof ai.generateText>[0], "model">;
+export type SupportedModel = keyof typeof models;
+
+type GenerateTextOptions = Omit<Parameters<typeof ai.generateText>[0], "model"> & {
+  modelName?: SupportedModel;
+};
 
 export const safeGenerateText = async (options: GenerateTextOptions) => {
+  const model = models[options.modelName ?? "GPT_4_MINI"];
   return ResultAsync.fromPromise(
     ai.generateText({
       model,
