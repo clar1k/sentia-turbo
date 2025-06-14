@@ -24,6 +24,6 @@ export class Tools {
           return wrapInTag(txDataJson, "tx");
         },
       }),
-    };
+    }
   }
 }

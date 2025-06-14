@@ -31,11 +31,18 @@ export const chats = pgTable('chats', {
 export const financeSummary = pgTable('finance_summary', {
   id: serial('id').primaryKey(),
   createdAt: timestamp('created_at').defaultNow(),
-  messages: text().notNull()
+  messages: text().notNull(),
 })
 
 export const defiSummary = pgTable('defi_summary', {
   id: serial('id').primaryKey(),
   createdAt: timestamp('created_at').defaultNow(),
-  messages: text().notNull()
+  messages: text().notNull(),
+})
+
+export const newsSummary = pgTable('news_summary', {
+  id: serial('id').primaryKey(),
+  createdAt: timestamp('created_at').defaultNow(),
+  originalData: jsonb('original_data').notNull(),
+  summary: text('summary').notNull(),
 })

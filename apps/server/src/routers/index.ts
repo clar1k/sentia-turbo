@@ -1,6 +1,5 @@
 import {
   jwtService,
-  mergeRouters,
   protectedProcedure,
   publicProcedure,
   router,
@@ -19,6 +18,7 @@ import { db } from "@/db";
 import { financeSummary, defiSummary } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { base } from "viem/chains";
+
 const userService = new UserService();
 const priceModule = new PriceModule();
 
@@ -174,7 +174,6 @@ export const appRouter = router({
             content: c.input.message,
           },
         ],
-        tools,
       });
 
       if (text.isErr()) {

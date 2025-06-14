@@ -1,7 +1,8 @@
-import { PriceModule } from "@/lib/modules/price";
-import { appRouter } from "@/routers";
-import { db } from "@/db";
-import { financeSummary } from "@/db/schema";
+import {PriceModule} from "@/lib/modules/price";
+import {appRouter} from "@/routers";
+import {db} from "@/db";
+import {financeSummary} from "@/db/schema";
+import { safeGenerateText } from "@/ai";
 
 const priceModule = new PriceModule();
 
@@ -45,13 +46,18 @@ Make a message without expect new answers
 
   console.log(message);
 
-  const result = await appRouter
-    .createCaller({ session: null })
-    .prompt({ message });
-  if (result.ok) {
-    const text = result?.text?.value?.text;
+  const result = await safeGenerateText({
+    messages: [
+      {
+        role: "user",
+        content: message,
+      }
+    ]
+  });
+  if (!result.isErr()) {
+    const text = result;
     console.log("✅ ChatGPT Insight:", text);
-    await db.insert(financeSummary).values({ messages: text });
+    await db.insert(financeSummary).values({ messages: text.value.text })
     return text;
   } else {
     console.error("❌ Prompt Error:", result);

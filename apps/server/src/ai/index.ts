@@ -2,10 +2,17 @@ import { env } from "@/env";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { ResultAsync } from "neverthrow";
 import * as ai from "ai";
+import { Tools } from "@/lib/mcp/tools";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
-const models: Record<string, any> = {
+export enum Models {
+  GPT_4_MINI = "GPT_4_MINI",
+  GPT_O3 = "GPT_O3",
+  SONNET_4 = "SONNET_4",
+}
+
+const models: Record<Models, any> = {
   GPT_4_MINI: openrouter("openai/gpt-4.1-mini"),
   GPT_O3: openrouter("openai/o3"),
   SONNET_4: openrouter("anthropic/claude-sonnet-4"),
@@ -22,6 +29,7 @@ export const safeGenerateText = async (options: GenerateTextOptions) => {
   return ResultAsync.fromPromise(
     ai.generateText({
       model,
+      tools: new Tools().getTools(),
       ...options,
     }),
     (error) => error as ai.AISDKError | ai.APICallError,
