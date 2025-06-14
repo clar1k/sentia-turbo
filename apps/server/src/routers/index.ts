@@ -160,6 +160,7 @@ const defiRouter = router({
   }),
 });
 import { newsRouter } from "./news.route";
+import { financeRoute } from "@/routers/finance.route";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
