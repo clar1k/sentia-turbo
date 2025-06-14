@@ -41,13 +41,13 @@ export function ChatTabItem({
         asChild
         isActive={isActive}
         className={cn(
-          "group rounded-xl px-2 transition-all duration-300 ease-in-out hover:bg-gray-400/25",
-          isActive && "bg-gray-400/25",
+          "group rounded-xl px-2 transition-all duration-300 ease-in-out hover:bg-gray-50",
+          isActive && "bg-gray-100",
         )}
       >
         <button
           onClick={() => onChatSelect(chat.id)}
-          className="flex w-full items-center gap-2 text-left"
+          className="flex w-full items-center gap-2 text-left text-gray-700 hover:text-gray-900"
         >
           <MessageSquare className="h-4 w-4 shrink-0" />
           <span className="truncate">{chat.title}</span>
@@ -55,7 +55,7 @@ export function ChatTabItem({
       </SidebarMenuButton>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="ml-6 transition-all duration-300 ease-in-out"
+          className="ml-6 text-gray-500 transition-all duration-300 ease-in-out hover:text-gray-700"
           asChild
         >
           <SidebarMenuAction>
@@ -63,13 +63,13 @@ export function ChatTabItem({
           </SidebarMenuAction>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="-mt-2 ml-1 flex flex-col gap-1 rounded-xl"
+          className="-mt-2 ml-1 flex flex-col gap-1 rounded-xl border-gray-200 bg-white"
           side="right"
           align="start"
         >
           {onRenameChat && (
             <DropdownMenuItem
-              className="text-black duration-300 ease-in hover:bg-gray-100"
+              className="text-gray-700 duration-300 ease-in hover:bg-gray-50"
               onClick={() => onRenameChat(chat.id)}
             >
               <Edit3 className="h-4 w-4" />
@@ -77,7 +77,7 @@ export function ChatTabItem({
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            className="text-black duration-300 ease-in focus:bg-gray-100"
+            className="text-gray-700 duration-300 ease-in hover:bg-gray-50 focus:bg-gray-50"
             onClick={() => onDeleteChat(chat.id)}
           >
             <Trash2 className="h-4 w-4" />

@@ -24,7 +24,7 @@ export function ChatInput({
   onKeyPress,
 }: ChatInputProps) {
   return (
-    <div className="bg-background fixed bottom-0 w-full border-t p-4">
+    <div className="fixed bottom-0 w-full border-t border-gray-200 bg-white p-4">
       <div className="mx-auto flex max-w-3xl gap-2">
         <Textarea
           value={input}
@@ -35,7 +35,7 @@ export function ChatInput({
               ? "Type your message here..."
               : "Create a new chat to start messaging"
           }
-          className="flex-1 rounded-xl bg-white"
+          className="flex-1 rounded-xl border-gray-200 bg-white text-gray-900 placeholder:text-gray-500"
           disabled={!activeChat || isTyping || isPending}
         />
         <Button
@@ -43,7 +43,7 @@ export function ChatInput({
           disabled={!input.trim() || !activeChat || isTyping || isPending}
           size="icon"
           variant="outline"
-          className="bg-white hover:bg-gray-100"
+          className="border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"
         >
           <Send className="h-4 w-4" />
         </Button>

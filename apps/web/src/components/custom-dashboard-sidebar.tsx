@@ -20,6 +20,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
+import { Link } from "@tanstack/react-router";
 
 export function CustomDashboardSidebar() {
   return (
@@ -77,24 +78,11 @@ export function CustomDashboardSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600">
-                    Premium Features
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600">
-                    Advanced AI
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600">
-                    Exclusive Insights
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600">
-                    VIP Support
-                  </SidebarMenuButton>
+                  <Link to="/chat">
+                    <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600">
+                      Agent
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
@@ -132,7 +120,7 @@ export function CustomDashboardSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
-                  Market Trends
+                  <Link to="/finance">Market Trends</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>

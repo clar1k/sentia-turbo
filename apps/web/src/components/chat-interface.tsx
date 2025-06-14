@@ -27,10 +27,10 @@ export function ChatInterface() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-white">
         <div className="flex items-center gap-2">
-          <Bot className="h-6 w-6 animate-spin" />
-          <span>Loading chats...</span>
+          <Bot className="h-6 w-6 animate-spin text-gray-600" />
+          <span className="text-gray-700">Loading chats...</span>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export function ChatInterface() {
         onDeleteChat={deleteChat}
       />
 
-      <SidebarInset className="relative flex h-screen flex-col overflow-auto">
+      <SidebarInset className="relative flex h-screen flex-col overflow-auto bg-white">
         <ChatHeader currentChatTitle={currentChat?.title} />
 
         <ChatMessages

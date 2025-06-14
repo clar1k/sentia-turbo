@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
 
 export interface StockMarket {
   price: number;
@@ -18,38 +18,41 @@ export interface MarketResponse {
 }
 
 export function useMarketData() {
-  const [marketData, setData] = useState<MarketResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: marketData,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["marketData"],
+    queryFn: async (): Promise<MarketResponse> => {
+      const res = await fetch(
+        "https://extra-bff.dropstab.com/v1.2/market-data/market-total-and-widgets-summary?fields=stockRealtimeSPX%2CstockRealtimeGOLD",
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
 
-  useEffect(() => {
-    const fetchMarketData = async () => {
-      try {
-        const res = await fetch(
-          'https://extra-bff.dropstab.com/v1.2/market-data/market-total-and-widgets-summary?fields=stockRealtimeSPX%2CstockRealtimeGOLD',
-          {
-            headers: {
-              Accept: 'application/json',
-            },
-          }
-        );
-
-        const json = await res.json();
-        if (json.ok) {
-          setData(json.data);
-        } else {
-          setError(json.message);
-        }
-      } catch (err) {
-        setError('Failed to fetch market data');
-        console.error(err);
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch market data: ${res.status}`);
       }
-    };
 
-    fetchMarketData();
-  }, []);
+      const json = await res.json();
 
-  return { marketData, loading, error };
+      if (!json.ok) {
+        throw new Error(json.message || "Failed to fetch market data");
+      }
+
+      return json.data;
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  return {
+    marketData: marketData ?? null,
+    loading,
+    error: error?.message ?? null,
+  };
 }
