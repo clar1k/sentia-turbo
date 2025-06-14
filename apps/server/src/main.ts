@@ -9,6 +9,7 @@ import cron from "node-cron";
 import { finance } from "@/schedule/finance";
 import { defi } from "@/schedule/defi";
 import { news } from "./schedule/news";
+import { serve } from "@hono/node-server";
 
 const app = new Hono();
 
@@ -35,16 +36,15 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-
-cron.schedule('0 0 * * *', () => {
+cron.schedule("0 0 * * *", () => {
   console.log("START");
-  finance().then(() => (console.log("finance DONE")));
-  defi().then(() => (console.log("defi DONE")));
-})
+  finance().then(() => console.log("finance DONE"));
+  defi().then(() => console.log("defi DONE"));
+});
 
-cron.schedule('*/30 * * * *', () => {
-  console.log("started cron news")
-  news().then(() => (console.log("news DONE")));
-})
+cron.schedule("*/30 * * * *", () => {
+  console.log("started cron news");
+  news().then(() => console.log("news DONE"));
+});
 
-export default app;
+serve(app);

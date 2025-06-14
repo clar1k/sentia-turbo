@@ -184,7 +184,7 @@ export const appRouter = router({
     }),
   wallets: walletRouter,
   auth: authRouter,
-  finance: financeRoute,
+  finance: financeRouter,
   news: newsRouter,
 });
 
