@@ -40,8 +40,14 @@ export async function finance() {
 💰 **Top 10 Tokens by Price**
 ${tokenList}
 
-Please summarize the current market status or provide insights/predictions based on this data. 
-Make a message without expect new answers 
+Based on the data above, provide a concise and insightful overview of the current crypto and broader market conditions. Highlight any notable trends or shifts in BTC dominance, overall trading volume, and correlations with traditional markets (SPX, gold).
+
+Then, deliver short-term predictions for:
+- 📅 **Today**
+- 📈 **Next 7 Days**
+- 📆 **Next 30 Days**
+
+Do not ask for further input or clarification. The output should be standalone, clear, and actionable.
     `.trim();
 
   console.log(message);
