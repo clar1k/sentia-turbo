@@ -5,6 +5,7 @@ import { routeTree } from "./routeTree.gen";
 
 import {
   DynamicContextProvider,
+  getAuthToken,
 } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from "wagmi";
@@ -12,9 +13,10 @@ import { http } from "viem";
 import { base, mainnet } from "viem/chains";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-query";
 import { queryClient, trpc } from "./utils/trpc";
 import type React from "react";
+import { toast } from "sonner";
 
 const config = createConfig({
   chains: [base],
@@ -32,14 +34,18 @@ function Providers({ children }: React.PropsWithChildren) {
       settings={{
         environmentId: import.meta.env.VITE_DYNAMIC_API_KEY || "",
         walletConnectors: [EthereumWalletConnectors],
+        events: {
+          onAuthSuccess: (params) => {
+            console.log(params);
+          },
+        }
       }}
+      theme="dark"
     >
       <WagmiProvider config={config}>
-        <QueryClientProvider client={dynamicQueryClient}>
           <DynamicWagmiConnector>
             {children}
           </DynamicWagmiConnector>
-        </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>
   )
@@ -52,9 +58,11 @@ const router = createRouter({
   context: { trpc, queryClient },
   Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
     return (
-      <Providers>
-        {children}
-      </Providers>
+      <QueryClientProvider client={dynamicQueryClient}>
+        <Providers>
+          {children}
+        </Providers>
+      </QueryClientProvider>
     );
   },
 });
