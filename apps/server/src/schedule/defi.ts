@@ -31,7 +31,18 @@ export async function defi() {
 - **Total Aave TVL Across Chains**: $${Number(totalTVL).toLocaleString()}
 
 
-Based on this data, provide a market summary and short-term prediction for DeFi trends, especially considering DEX volume activity and Aave's TVL distribution across chains. Avoid asking for further input. 
+
+Using the data above, provide a concise market summary of the current DeFi landscape. Focus on:
+- Recent trends in decentralized exchange (DEX) activity
+- The distribution and significance of Aave's total value locked (TVL) across chains
+
+Then, based on this analysis, offer short-term forecasts for DeFi performance:
+- 📅 **Today**
+- 📈 **Next 7 Days**
+- 📆 **Next 30 Days**
+
+Your response should be clear and insight-driven. Avoid asking for additional input or clarification.
+Do not ask for additional input or clarification.
   `.trim();
 
   console.error('totalDevVolume:', totalDexVolume);
