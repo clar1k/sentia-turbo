@@ -12,6 +12,7 @@ interface SummaryResponse {
 
 export async function news() {
   const newNews = await newsModule.fetchNewNews();
+  if (newNews.length === 0) return;
   const message = `You are an AI assistant specializing in summarizing financial news. Your task is to process a list of news articles and provide a concise summary for each one.
 
 You will be given a JSON array of news articles. For each article, extract the \`TITLE\`, \`URL\`, and \`BODY\`.
@@ -32,8 +33,6 @@ Your response MUST be a valid JSON array \`[...]\`. Each object in the output ar
 Here is the news data:
 ${JSON.stringify(newNews, null, 2)}`;
 
-  console.log(message);
-
   const result = await safeGenerateText({
     messages: [
       {
@@ -45,13 +44,13 @@ ${JSON.stringify(newNews, null, 2)}`;
   });
   if (!result.isErr()) {
     const text = result;
-    const summaryObj: SummaryResponse = JSON.parse(text.value.text);
-    console.log("✅ ChatGPT Insight:", text);
-    await db.insert(newsSummary).values({ originalData: newNews, summary: summaryObj.summary })
+    const summaryObj: SummaryResponse[] = JSON.parse(text.value.text);
+
+    const summaries = summaryObj.map((obj, index) => ({ originalData: newNews[index], summary: obj.summary }));
+    await db.insert(newsSummary).values(summaries);
     return text;
   } else {
     console.error("❌ Prompt Error:", result.error);
     return 'please try again';
   }
-
 }

@@ -9,6 +9,7 @@ import {financeRoute} from "@/routers/finance.route";
 import cron from 'node-cron';
 import {finance} from "@/schedule/finance";
 import { defi } from "./schedule/defi";
+import { news } from "./schedule/news";
 
 const app = new Hono();
 
@@ -42,7 +43,8 @@ cron.schedule('0 0 * * *', () => {
   defi().then(() => (console.log("defi DONE")));
 })
 
-cron.schedule('* * * * *', () => {
+cron.schedule('*/30 * * * *', () => {
+  console.log("started cron news")
   news().then(() => (console.log("news DONE")));
 })
 

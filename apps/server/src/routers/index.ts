@@ -5,14 +5,13 @@ import { ErrorCode, errorResponse } from "@/lib/error";
 import { walletRouter } from "./wallet.route";
 import { authRouter } from "./auth.router";
 import { financeRoute } from "./finance.route";
+import { newsRouter } from "./news.route";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   prompt: publicProcedure
     .input(type({ message: "string" }))
     .mutation(async (c) => {
-      const tools = new Tools().getTools();
-
       const text = await safeGenerateText({
         messages: [
           {
@@ -31,6 +30,7 @@ export const appRouter = router({
   wallets: walletRouter,
   auth: authRouter,
   finance: financeRoute,
+  news: newsRouter,
 });
 
 export type AppRouter = typeof appRouter;
