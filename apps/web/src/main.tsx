@@ -3,9 +3,7 @@ import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
 
-import {
-  DynamicContextProvider,
-} from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from "wagmi";
 import { http } from "viem";
@@ -34,13 +32,11 @@ function Providers({ children }: React.PropsWithChildren) {
             walletConnectors: [EthereumWalletConnectors],
           }}
         >
-          <DynamicWagmiConnector>
-            {children}
-          </DynamicWagmiConnector>
+          <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
         </DynamicContextProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  )
+  );
 }
 
 const router = createRouter({
@@ -49,11 +45,7 @@ const router = createRouter({
   defaultPendingComponent: () => <Loader />,
   context: { trpc, queryClient },
   Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
-    return (
-      <Providers>
-        {children}
-      </Providers>
-    );
+    return <Providers>{children}</Providers>;
   },
 });
 
