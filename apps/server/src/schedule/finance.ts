@@ -7,9 +7,11 @@ import { safeGenerateText } from "@/ai";
 const priceModule = new PriceModule();
 
 export async function finance() {
-  const coingeckoRes = await fetch('https://api.coingecko.com/api/v3/global');
+  const coingeckoRes = await fetch("https://api.coingecko.com/api/v3/global");
   const coingeckoData = await coingeckoRes.json();
-  const dropstabRes = await fetch('https://extra-bff.dropstab.com/v1.2/market-data/market-total-and-widgets-summary?fields=stockRealtimeSPX%2CstockRealtimeGOLD');
+  const dropstabRes = await fetch(
+    "https://extra-bff.dropstab.com/v1.2/market-data/market-total-and-widgets-summary?fields=stockRealtimeSPX%2CstockRealtimeGOLD",
+  );
   const dropstabData = await dropstabRes.json();
 
   const btcDominance = coingeckoData?.data?.market_cap_percentage?.btc;
@@ -18,19 +20,14 @@ export async function finance() {
   const spxPrice = dropstabData?.data?.stockRealtimeSPX?.stockMarket?.price;
   const goldPrice = dropstabData?.data?.stockRealtimeGOLD?.stockMarket?.price;
 
-  const tokenList = priceModule.getTopCoins()
+  const tokenList = priceModule
+    .getTopCoins()
     .map((symbol, index) => {
       const price = tokenPrices[symbol];
-      const formattedPrice = price !== undefined ? `$${price}` : 'N/A';
+      const formattedPrice = price !== undefined ? `$${price}` : "N/A";
       return `${index + 1}. ${symbol.toUpperCase()}: ${formattedPrice}`;
     })
-    .join('\n');
-
-  console.error('BTC Dominance (%):', btcDominance);
-  console.error('Total Volume (USD):', totalVolumeUsd);
-  console.error('tokenPrices:', tokenPrices);
-  console.log('SPX Price:', spxPrice);
-  console.log('Gold Price:', goldPrice);
+    .join("\n");
 
   const message = `
 📊 **Market Summary**
@@ -63,8 +60,7 @@ Make a message without expect new answers
     await db.insert(financeSummary).values({ messages: text.value.text })
     return text;
   } else {
-    console.error("❌ Prompt Error:", result.error);
-    return 'please try again';
+    console.error("❌ Prompt Error:", result);
+    return "please try again";
   }
-
 }

@@ -32,6 +32,6 @@ export const safeGenerateText = async (options: GenerateTextOptions) => {
       tools: new Tools().getTools(),
       ...options,
     }),
-    (error) => error as ai.AISDKError | ai.APICallError
+    (error) => error as ai.AISDKError | ai.APICallError,
   );
 };

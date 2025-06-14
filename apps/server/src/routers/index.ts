@@ -7,17 +7,17 @@ import { authRouter } from "./auth.router";
 import { financeRoute } from "./finance.route";
 
 export const appRouter = router({
-  healthCheck: publicProcedure.query(() => {
-    return "OK";
-  }),
+  healthCheck: publicProcedure.query(() => "OK"),
   prompt: publicProcedure
     .input(type({ message: "string" }))
-    .mutation(async (ctx) => {
+    .mutation(async (c) => {
+      const tools = new Tools().getTools();
+
       const text = await safeGenerateText({
         messages: [
           {
             role: "user",
-            content: ctx.input.message,
+            content: c.input.message,
           },
         ],
       });
@@ -26,7 +26,7 @@ export const appRouter = router({
         return errorResponse(text.error, ErrorCode.PROMPT_ERROR);
       }
 
-      return { text, ok: true };
+      return { ok: true, text };
     }),
   wallets: walletRouter,
   auth: authRouter,

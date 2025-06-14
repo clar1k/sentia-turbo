@@ -15,7 +15,9 @@ interface GetContextOptions {
 }
 
 type ContextType = Record<string, any>;
-type ContextsListResultType = Record<ContextsEnum, ContextType> | Record<string, any>;
+type ContextsListResultType =
+  | Record<ContextsEnum, ContextType>
+  | Record<string, any>;
 
 export class LlmContext {
   async generateContext(options: ContextGenerationOptions) {
@@ -31,27 +33,40 @@ export class LlmContext {
     }
     if (options.include.includes(ContextsEnum.finance)) {
       const module = new PriceModule();
-      const listOfCoins = module.getTopCoins()
+      const listOfCoins = module.getTopCoins();
       result[ContextsEnum.finance] = await module.getPrices(listOfCoins);
     }
 
     return result;
   }
 
-  async saveContext({ data, type }: { data: Record<string, any>, type: ContextsEnum }) {
+  async saveContext({
+    data,
+    type,
+  }: {
+    data: Record<string, any>;
+    type: ContextsEnum;
+  }) {
     await db.insert(contextData).values({ data, type });
   }
 
   async getContext(options: GetContextOptions) {
     const deadlineTime = new Date(options.deadline);
-    const cachedContexts = await db.select().from(contextData).where(gte(contextData.createdAt, deadlineTime));
-    const cachedContext = cachedContexts.find(obj => obj.type === options.type.toString())
+    const cachedContexts = await db
+      .select()
+      .from(contextData)
+      .where(gte(contextData.createdAt, deadlineTime));
+    const cachedContext = cachedContexts.find(
+      (obj) => obj.type === options.type.toString(),
+    );
     console.log(cachedContexts);
     console.log(cachedContext);
-    
+
     let context: ContextType;
     if (!cachedContext) {
-      const generatedContext = await this.generateContext({ include: [options.type] });
+      const generatedContext = await this.generateContext({
+        include: [options.type],
+      });
       context = generatedContext[options.type];
       this.saveContext({ data: context, type: options.type });
     } else {
