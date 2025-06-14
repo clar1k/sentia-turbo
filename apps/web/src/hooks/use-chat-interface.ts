@@ -121,6 +121,8 @@ export function useChatInterface() {
         return;
       }
 
+      console.log("RESPONSE", response, "text" in response);
+
       // Create AI message with the response
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),

@@ -4,6 +4,8 @@ import { TransferModule } from "../modules/transfer";
 import { wrapInTag } from "./xml";
 
 export class Tools {
+  constructor(private userAddress?: string) {}
+
   getTools(): ToolSet {
     return {
       swap: tool({
@@ -19,7 +21,7 @@ export class Tools {
             .describe("The ETH transfer amount. For example: `0.15`"),
         }),
         execute: async (args) => {
-          const txData = new TransferModule().generateTxForUser(args);
+          const txData = new TransferModule().generateTxForUser({ ...args, from: this.userAddress });
           const txDataJson = JSON.stringify(txData, null, 2);
           return wrapInTag(txDataJson, "tx");
         },
