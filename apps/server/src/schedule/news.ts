@@ -10,7 +10,7 @@ interface SummaryResponse {
   summary: string;
 }
 
-export async function news() {
+export async function coindeskNews() {
   const newNews = await newsModule.fetchNewNews();
   if (newNews.length === 0) return;
   const message = `You are an AI assistant specializing in summarizing financial news. Your task is to process a list of news articles and provide a concise summary for each one.
@@ -53,4 +53,8 @@ ${JSON.stringify(newNews, null, 2)}`;
     console.error("❌ Prompt Error:", result.error);
     return 'please try again';
   }
+}
+
+export async function twitterNews() {
+  const latestTwitterNews = "";
 }

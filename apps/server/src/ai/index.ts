@@ -1,8 +1,9 @@
 import { env } from "@/env";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { ResultAsync } from "neverthrow";
+import { Result, ResultAsync } from "neverthrow";
 import * as ai from "ai";
 import { Tools } from "@/lib/mcp/tools";
+import type { streamText } from "ai";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
@@ -24,6 +25,13 @@ type GenerateTextOptions = Omit<Parameters<typeof ai.generateText>[0], "model"> 
   modelName?: SupportedModel;
 };
 
+type StreamTextOptions = Omit<
+  Parameters<typeof streamText>[0],
+  "model"
+> & {
+  modelName?: SupportedModel;
+};
+
 export const safeGenerateText = async (options: GenerateTextOptions) => {
   const model = models[options.modelName ?? "GPT_4_MINI"];
   return ResultAsync.fromPromise(
@@ -34,4 +42,18 @@ export const safeGenerateText = async (options: GenerateTextOptions) => {
     }),
     (error) => error as ai.AISDKError | ai.APICallError,
   );
+};
+
+const throwableStreamText = Result.fromThrowable(
+  ai.streamText,
+  (error) => error as ai.AISDKError,
+);
+
+export const safeStreamText = (options: StreamTextOptions) => {
+  const model = models[options.modelName ?? "GPT_4_MINI"];
+  return throwableStreamText({
+      model,
+      tools: new Tools().getTools(),
+      ...options,
+    })
 };

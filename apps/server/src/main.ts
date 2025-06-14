@@ -5,13 +5,15 @@ import { appRouter } from "./routers/index";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import {financeRoute} from "@/routers/finance.route";
 import cron from 'node-cron';
 import {finance} from "@/schedule/finance";
 import { defi } from "./schedule/defi";
-import { news } from "./schedule/news";
+import { coindeskNews } from "./schedule/news";
+// import { WebSocketServer } from "ws";
+import { createBunWebSocket } from 'hono/bun'
 
 const app = new Hono();
+const { websocket, upgradeWebSocket } = createBunWebSocket()
 
 app.use(logger());
 app.use(
@@ -32,9 +34,31 @@ app.use(
   }),
 );
 
+// const wss = new WebSocketServer({ noServer: true });
+
 app.get("/", (c) => {
   return c.text("OK");
 });
+
+const topic = "";
+
+// app.get(
+//   "/ws",
+//   upgradeWebSocket((c) => {
+//     return {
+//       onOpen: (event, ws) => {
+//         console.log("WebSocket connection opened");
+//         wss.emit("connection", ws, c.req.raw);
+//       },
+//       onClose: (event, ws) => {
+//         console.log("WebSocket connection closed");
+//       },
+//       onError: (event, ws) => {
+//         console.error("WebSocket error:", event);
+//       },
+//     };
+//   }),
+// );
 
 
 cron.schedule('0 0 * * *', () => {
@@ -44,8 +68,13 @@ cron.schedule('0 0 * * *', () => {
 })
 
 cron.schedule('*/30 * * * *', () => {
-  console.log("started cron news")
-  news().then(() => (console.log("news DONE")));
+  coindeskNews().then(() => (console.log("news DONE")));
 })
+
+// const server = Bun.serve({
+//   port: 3000,
+//   fetch: app.fetch,
+//   websocket: websocket,
+// });
 
 export default app;

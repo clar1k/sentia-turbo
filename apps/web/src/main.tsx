@@ -40,7 +40,7 @@ function Providers({ children }: React.PropsWithChildren) {
           },
         }
       }}
-      theme="dark"
+      theme="light"
     >
       <WagmiProvider config={config}>
           <DynamicWagmiConnector>

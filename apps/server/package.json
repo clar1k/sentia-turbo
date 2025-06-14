@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
+    "@hono/node-ws": "^1.1.7",
     "@hono/trpc-server": "^0.3.4",
     "@openrouter/ai-sdk-provider": "^0.7.1",
     "@trpc/client": "^11.0.0",
@@ -35,6 +36,7 @@
     "pg": "^8.14.1",
     "redstone-api": "^0.4.13",
     "siwe": "^3.0.0",
+    "ws": "^8.18.2",
     "zod": "^3.25.16"
   },
   "devDependencies": {
