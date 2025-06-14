@@ -1,6 +1,8 @@
-import type { Context as HonoContext } from "hono";
-import { JWTService } from '../lib/jwt';
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { Context as HonoContext, HonoRequest } from "hono";
+import { JWTService, verifyDynamicJWT } from '../lib/jwt';
+import type { JwtPayload } from "jsonwebtoken";
+import { TRPCError } from "@trpc/server";
+import { UserService } from "./user";
 
 export type CreateContextOptions = {
   context: HonoContext;
@@ -8,18 +10,32 @@ export type CreateContextOptions = {
 
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
-const jwtService = new JWTService();
+const userService = new UserService();
 
-export async function createContext({ context }: CreateContextOptions) {
-  const getUser = () => {
-    const authHeader = context.req.header().authorization || "";
-    if (!authHeader?.startsWith('Bearer ')) return null;
-    
-    const token = authHeader.substring(7);
-    return jwtService.verifyToken(token);
-  };
+export async function createContext({ req }: { req: HonoRequest }) {
+  const auth = req.header()['authorization'] ?? '';
+  const token = auth.startsWith('Bearer ')
+    ? auth.slice('Bearer '.length)
+    : null;
 
+  if (!token) {
+    // no token → anonymous
+    return { user: null, dynamicPayload: null };
+  }
+
+  let payload: JwtPayload;
+  try {
+    const verifiedToken = await verifyDynamicJWT(token);
+    if (!verifiedToken) throw new Error("Token is invalid");
+    payload = verifiedToken;
+  } catch (err) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Invalid token' });
+  }
+
+  const address = payload.sub as string;
+  const dbUser = await userService.findOrCreateUser(address);
   return {
-    user: getUser(),
+    user: { id: dbUser.id, address },
+    dynamicPayload: payload,
   };
 };
