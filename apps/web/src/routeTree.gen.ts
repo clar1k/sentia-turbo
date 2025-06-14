@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as DefiRouteImport } from './routes/defi'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DefiRoute = DefiRouteImport.update({
+  id: '/defi',
+  path: '/defi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
+  '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/finance'
+  fullPaths: '/' | '/chat' | '/defi' | '/finance'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/finance'
-  id: '__root__' | '/' | '/chat' | '/finance'
+  to: '/' | '/chat' | '/defi' | '/finance'
+  id: '__root__' | '/' | '/chat' | '/defi' | '/finance'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
+  DefiRoute: typeof DefiRoute
   FinanceRoute: typeof FinanceRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/defi': {
+      id: '/defi'
+      path: '/defi'
+      fullPath: '/defi'
+      preLoaderRoute: typeof DefiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
+  DefiRoute: DefiRoute,
   FinanceRoute: FinanceRoute,
 }
 export const routeTree = rootRouteImport

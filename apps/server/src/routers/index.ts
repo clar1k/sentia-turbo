@@ -16,9 +16,9 @@ import z from "zod";
 import { UserService } from "@/lib/user";
 import { PriceModule } from "@/lib/modules/price";
 import { db } from "@/db";
-import { financeSummary } from "@/db/schema";
+import { financeSummary, defiSummary } from "@/db/schema";
 import { desc } from "drizzle-orm";
-
+import { base } from "viem/chains";
 const userService = new UserService();
 const priceModule = new PriceModule();
 
@@ -111,7 +111,6 @@ const authRouter = router({
       };
     }),
 
-  // Refresh token
   refreshToken: protectedProcedure.mutation(async ({ ctx }) => {
     const dbUser = await userService.getUserById(ctx.user.id);
 
@@ -124,8 +123,8 @@ const authRouter = router({
 
     const newToken = jwtService.generateToken({
       id: ctx.user.id,
+      chainId: base.id,
       address: ctx.user.address,
-      chainId: ctx.user.chainId,
       issuedAt: new Date().toISOString(),
     });
 
@@ -145,6 +144,17 @@ const financeRouter = router({
       .select()
       .from(financeSummary)
       .orderBy(desc(financeSummary.createdAt))
+      .limit(1);
+    return { ok: true, message };
+  }),
+});
+
+const defiRouter = router({
+  getAiSummary: publicProcedure.query(async () => {
+    const message = await db
+      .select()
+      .from(defiSummary)
+      .orderBy(desc(defiSummary.createdAt))
       .limit(1);
     return { ok: true, message };
   }),
@@ -176,6 +186,7 @@ export const appRouter = router({
   wallets: walletRouter,
   auth: authRouter,
   finance: financeRouter,
+  defi: defiRouter,
 });
 
 export type AppRouter = typeof appRouter;
