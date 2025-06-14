@@ -46,7 +46,7 @@ export function ChatInterface() {
         onDeleteChat={deleteChat}
       />
 
-      <SidebarInset className="flex flex-col">
+      <SidebarInset className="relative flex h-screen flex-col overflow-auto">
         <ChatHeader currentChatTitle={currentChat?.title} />
 
         <ChatMessages

@@ -11,9 +11,7 @@ export function useChatInterface() {
   const [isTyping, setIsTyping] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
-  const testStreamingMutation = useMutation(
-    trpc.testStreaming.mutationOptions(),
-  );
+  const promptMutation = useMutation(trpc.prompt.mutationOptions());
   const currentChat = chats.find((chat) => chat.id === activeChat);
 
   React.useEffect(() => {
@@ -79,12 +77,7 @@ export function useChatInterface() {
   };
 
   const sendMessage = async () => {
-    if (
-      !input.trim() ||
-      !activeChat ||
-      isTyping ||
-      testStreamingMutation.isPending
-    )
+    if (!input.trim() || !activeChat || isTyping || promptMutation.isPending)
       return;
 
     const userMessage: Message = {
@@ -118,76 +111,35 @@ export function useChatInterface() {
     setIsTyping(true);
 
     try {
-      // Call the streaming API without parameters
-      const streamResponse = await testStreamingMutation.mutateAsync();
+      const response = await promptMutation.mutateAsync({
+        message: messageContent,
+      });
 
-      // Create an initial AI message that will be updated as we stream
-      const aiMessageId = (Date.now() + 1).toString();
-      const initialAiMessage: Message = {
-        id: aiMessageId,
-        content: "",
+      // Check if the response is an error
+      if (!response.ok) {
+        toast.error("Failed to get AI response");
+        return;
+      }
+
+      // Create AI message with the response
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content:
+          "text" in response
+            ? response.text.value?.text ||
+              "I apologize, but I couldn't generate a response."
+            : "I apologize, but I couldn't generate a response.",
         role: "assistant",
         timestamp: new Date(),
       };
 
-      // Add the initial empty AI message
+      // Add AI message to chat
       setChats((prev) =>
         prev.map((chat) =>
           chat.id === activeChat
             ? {
                 ...chat,
-                messages: [...chat.messages, initialAiMessage],
-                lastMessage: new Date(),
-              }
-            : chat,
-        ),
-      );
-
-      // Handle streaming text
-      let accumulatedText = "";
-
-      // Stream the text chunks
-      for await (const chunk of streamResponse.textStream) {
-        accumulatedText += chunk;
-
-        // Update the AI message with accumulated text
-        setChats((prev) =>
-          prev.map((chat) =>
-            chat.id === activeChat
-              ? {
-                  ...chat,
-                  messages: chat.messages.map((msg) =>
-                    msg.id === aiMessageId
-                      ? { ...msg, content: accumulatedText }
-                      : msg,
-                  ),
-                  lastMessage: new Date(),
-                }
-              : chat,
-          ),
-        );
-      }
-
-      // Get final text as fallback
-      const finalText = await streamResponse.text;
-
-      // Final update with complete text (in case streaming missed anything)
-      setChats((prev) =>
-        prev.map((chat) =>
-          chat.id === activeChat
-            ? {
-                ...chat,
-                messages: chat.messages.map((msg) =>
-                  msg.id === aiMessageId
-                    ? {
-                        ...msg,
-                        content:
-                          finalText ||
-                          accumulatedText ||
-                          "I apologize, but I couldn't generate a response.",
-                      }
-                    : msg,
-                ),
+                messages: [...chat.messages, aiMessage],
                 lastMessage: new Date(),
               }
             : chat,
@@ -196,20 +148,6 @@ export function useChatInterface() {
     } catch (err) {
       toast.error("Failed to get AI response");
       console.error("Error getting AI response:", err);
-
-      // Remove the empty AI message on error
-      setChats((prev) =>
-        prev.map((chat) =>
-          chat.id === activeChat
-            ? {
-                ...chat,
-                messages: chat.messages.filter(
-                  (msg) => msg.id !== (Date.now() + 1).toString(),
-                ),
-              }
-            : chat,
-        ),
-      );
     } finally {
       setIsTyping(false);
     }
@@ -233,7 +171,7 @@ export function useChatInterface() {
     messagesEndRef,
 
     // Mutation state
-    isPending: testStreamingMutation.isPending,
+    isPending: promptMutation.isPending,
 
     // Setters
     setActiveChat,

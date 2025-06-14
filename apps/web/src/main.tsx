@@ -34,13 +34,11 @@ function Providers({ children }: React.PropsWithChildren) {
     >
       <WagmiProvider config={config}>
         <QueryClientProvider client={dynamicQueryClient}>
-          <DynamicWagmiConnector>
-            {children}
-          </DynamicWagmiConnector>
+          <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
         </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>
-  )
+  );
 }
 
 const router = createRouter({

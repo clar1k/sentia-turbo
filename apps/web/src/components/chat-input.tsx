@@ -24,7 +24,7 @@ export function ChatInput({
   onKeyPress,
 }: ChatInputProps) {
   return (
-    <div className="border-t p-4">
+    <div className="bg-background fixed bottom-0 w-full border-t p-4">
       <div className="mx-auto flex max-w-3xl gap-2">
         <Textarea
           value={input}

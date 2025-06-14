@@ -1,4 +1,11 @@
-import { jwtService, mergeRouters, protectedProcedure, publicProcedure, router, siweService } from "@/lib/trpc";
+import {
+  jwtService,
+  mergeRouters,
+  protectedProcedure,
+  publicProcedure,
+  router,
+  siweService,
+} from "@/lib/trpc";
 import { type } from "arktype";
 import { safeGenerateText } from "@/ai";
 import { ErrorCode, errorResponse } from "@/lib/error";
@@ -11,15 +18,16 @@ import { UserService } from "@/lib/user";
 const userService = new UserService();
 
 const walletRouter = router({
-  create: protectedProcedure
-    .input(type({}))
-    .mutation(async ({ ctx }) => {
-      const userWallet = await getUserWallet({ userId: ctx.user.userId }); // FIXME: Temprorary thing
-      if (!userWallet) {
-        console.log("test", userWallet);
-      }
-      return { wallet: userWallet || await createUserWallet({ userId: 1000 }), ok: true };
-    }),
+  create: protectedProcedure.input(type({})).mutation(async ({ ctx }) => {
+    const userWallet = await getUserWallet({ userId: 1 }); // FIXME: Temprorary thing
+    if (!userWallet) {
+      console.log("test", userWallet);
+    }
+    return {
+      wallet: userWallet || (await createUserWallet({ userId: 1000 })),
+      ok: true,
+    };
+  }),
 });
 
 const authRouter = router({
@@ -30,22 +38,26 @@ const authRouter = router({
   }),
 
   getMessage: publicProcedure
-    .input(z.object({
-      address: z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum address'),
-      chainId: z.number().min(1),
-      nonce: z.string(),
-      domain: z.string().optional().default('localhost:3000'),
-      uri: z.string().url().optional().default('http://localhost:3000'),
-    }))
+    .input(
+      z.object({
+        address: z
+          .string()
+          .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address"),
+        chainId: z.number().min(1),
+        nonce: z.string(),
+        domain: z.string().optional().default("localhost:3000"),
+        uri: z.string().url().optional().default("http://localhost:3000"),
+      }),
+    )
     .query(({ input }) => {
       const message = siweService.createMessage({
         address: input.address,
         domain: input.domain,
         uri: input.uri,
-        version: '1',
+        version: "1",
         chainId: input.chainId,
         nonce: input.nonce,
-        statement: 'Sign in to authenticate your wallet',
+        statement: "Sign in to authenticate your wallet",
       });
 
       return {
@@ -55,21 +67,30 @@ const authRouter = router({
 
   // Verify signature and return access token
   verifySignature: publicProcedure
-    .input(z.object({
-      message: z.string(),
-      signature: z.string().regex(/^0x[a-fA-F0-9]+$/, 'Invalid signature format'),
-    }))
+    .input(
+      z.object({
+        message: z.string(),
+        signature: z
+          .string()
+          .regex(/^0x[a-fA-F0-9]+$/, "Invalid signature format"),
+      }),
+    )
     .mutation(async ({ input }) => {
-      const verification = await siweService.verifyMessage(input.message, input.signature);
-      
+      const verification = await siweService.verifyMessage(
+        input.message,
+        input.signature,
+      );
+
       if (!verification.success || !verification.data) {
         throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: verification.error || 'Signature verification failed',
+          code: "UNAUTHORIZED",
+          message: verification.error || "Signature verification failed",
         });
       }
 
-      const dbUser = await userService.findOrCreateUser(verification.data.address);
+      const dbUser = await userService.findOrCreateUser(
+        verification.data.address,
+      );
       const user = {
         id: dbUser.id,
         address: verification.data.address,
@@ -88,11 +109,11 @@ const authRouter = router({
   // Refresh token
   refreshToken: protectedProcedure.mutation(async ({ ctx }) => {
     const dbUser = await userService.getUserById(ctx.user.id);
-  
+
     if (!dbUser) {
       throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'User not found',
+        code: "UNAUTHORIZED",
+        message: "User not found",
       });
     }
 
@@ -109,27 +130,28 @@ const authRouter = router({
   }),
 });
 
-
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   prompt: publicProcedure
     .input(type({ message: "string" }))
-    .mutation(async (ctx) => {
+    .mutation(async (c) => {
+      const tools = new Tools().getTools();
+
       const text = await safeGenerateText({
         messages: [
           {
             role: "user",
-            content: ctx.input.message,
+            content: c.input.message,
           },
         ],
-        tools: new Tools().getTools(),
+        tools,
       });
 
       if (text.isErr()) {
         return errorResponse(text.error, ErrorCode.PROMPT_ERROR);
       }
 
-      return { text, ok: true };
+      return { ok: true, text };
     }),
   wallets: walletRouter,
   auth: authRouter,

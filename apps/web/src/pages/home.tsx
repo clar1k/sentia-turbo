@@ -8,7 +8,7 @@ import { CustomDashboardSidebar } from "@/components/custom-dashboard-sidebar";
 export const Home = () => {
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full bg-white">
+      <div className="flex w-full bg-white">
         <CustomDashboardSidebar />
         <SidebarInset className="flex-1 bg-white">
           <header className="flex h-16 shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4">

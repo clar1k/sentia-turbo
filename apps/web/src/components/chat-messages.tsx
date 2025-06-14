@@ -34,7 +34,7 @@ export function ChatMessages({
   onCreateNewChat,
 }: ChatMessagesProps) {
   return (
-    <ScrollArea className="flex-1 p-4">
+    <ScrollArea className="mb-[150px] flex-1 p-4">
       <div className="mx-auto max-w-3xl space-y-4">
         {!currentChat ? (
           <div className="flex h-full flex-col items-center justify-center py-12 text-center">

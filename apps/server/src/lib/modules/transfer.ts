@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { createPublicClient, http } from "viem";
-import { getEnsAddress } from 'viem/ens';
-import { base } from 'viem/chains'
+import { getEnsAddress } from "viem/ens";
+import { base } from "viem/chains";
 
 interface GenerateTxForUserOptions {
   recipient: string;
@@ -11,7 +11,7 @@ interface GenerateTxForUserOptions {
 const client = createPublicClient({
   chain: base,
   transport: http(),
-})
+});
 
 export class TransferModule {
   async generateTxForUser({ recipient, amount }: GenerateTxForUserOptions) {
@@ -20,7 +20,7 @@ export class TransferModule {
       receipientAddress = await getEnsAddress(client, { name: recipient });
     }
     if (!ethers.isAddress(receipientAddress)) {
-      throw new Error('Invalid receipint address');
+      throw new Error("Invalid receipint address");
     }
 
     const valueInWei = ethers.parseEther(amount.toString());
@@ -28,9 +28,9 @@ export class TransferModule {
     const txData = {
       to: recipient,
       value: valueInWei.toString(),
-      gasLimit: '21000',
-      chainId: base.id,  // Base for now
-    }
+      gasLimit: "21000",
+      chainId: base.id, // Base for now
+    };
     return txData;
   }
 }
