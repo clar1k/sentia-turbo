@@ -19,8 +19,8 @@
     {
       "idx": 2,
       "version": "7",
-      "when": 1749899491764,
-      "tag": "0002_classy_frank_castle",
+      "when": 1749855075907,
+      "tag": "0002_fix-user-id-in-users-wallet",
       "breakpoints": true
     }
   ]

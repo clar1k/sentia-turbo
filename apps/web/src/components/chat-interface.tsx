@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@/utils/trpc";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 interface Message {
   id: string;
@@ -392,13 +393,19 @@ export function ChatInterface() {
       </Sidebar>
 
       <SidebarInset className="flex flex-col">
-        <header className="flex h-14 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-          <div className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            <span className="font-medium">
-              {currentChat?.title || "Select a chat"}
-            </span>
+        <header className="flex h-14 items-center justify-between border-b px-4">
+          <div className="flex gap-2">
+            <SidebarTrigger />
+            <div className="flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              <span className="font-medium">
+                {currentChat?.title || "Select a chat"}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <DynamicWidget />
           </div>
         </header>
 

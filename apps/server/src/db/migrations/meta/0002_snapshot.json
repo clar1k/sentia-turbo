@@ -1,5 +1,5 @@
 {
-  "id": "83255a17-a09d-4268-8827-2032c2137f55",
+  "id": "002d7acf-77bc-44e9-be13-74600d49c2a4",
   "prevId": "7761511a-9527-4a29-a4e5-b2565a40c5eb",
   "version": "7",
   "dialect": "postgresql",
@@ -68,38 +68,6 @@
         "data": {
           "name": "data",
           "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.finance_summary": {
-      "name": "finance_summary",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "messages": {
-          "name": "messages",
-          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -185,7 +153,7 @@
           "name": "user_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},

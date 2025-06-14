@@ -2,7 +2,8 @@ import { db } from "@/db";
 import { DeFiModule } from "../modules/defi";
 import { PriceModule } from "../modules/price";
 import { contextData } from "@/db/schema";
-import { asc, eq, gte } from "drizzle-orm";
+import { gte } from "drizzle-orm";
+import { ContextsEnum } from "types";
 
 interface ContextGenerationOptions {
   include: ContextsEnum[];
@@ -47,6 +48,7 @@ export class LlmContext {
     const cachedContext = cachedContexts.find(obj => obj.type === options.type.toString())
     console.log(cachedContexts);
     console.log(cachedContext);
+    
     let context: ContextType;
     if (!cachedContext) {
       const generatedContext = await this.generateContext({ include: [options.type] });
