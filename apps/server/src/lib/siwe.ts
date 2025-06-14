@@ -6,12 +6,12 @@ export class SIWEService {
   private readonly NONCE_EXPIRY = 10 * 60 * 1000; // 10 minutes
 
   generateNonce(): string {
-    const nonce = randomBytes(32).toString('hex');
+    const nonce = randomBytes(32).toString("hex");
     const expiresAt = Date.now() + this.NONCE_EXPIRY;
-    
+
     this.nonces.set(nonce, { nonce, expiresAt });
     this.cleanupExpiredNonces();
-    
+
     return nonce;
   }
 
@@ -21,7 +21,7 @@ export class SIWEService {
       this.nonces.delete(nonce);
       return false;
     }
-    
+
     // Remove nonce after validation (one-time use)
     this.nonces.delete(nonce);
     return true;
@@ -48,7 +48,7 @@ export class SIWEService {
     return new SiweMessage({
       domain: params.domain,
       address: params.address,
-      statement: params.statement || 'Sign in to authenticate your wallet',
+      statement: params.statement || "Sign in to authenticate your wallet",
       uri: params.uri,
       version: params.version,
       chainId: params.chainId,
@@ -58,36 +58,42 @@ export class SIWEService {
     });
   }
 
-  async verifyMessage(message: string, signature: string): Promise<{
+  async verifyMessage(
+    message: string,
+    signature: string,
+  ): Promise<{
     success: boolean;
     data?: SiweMessage;
     error?: string;
   }> {
     try {
       const siweMessage = new SiweMessage(message);
-      
+
       // Validate nonce
       if (!this.validateNonce(siweMessage.nonce)) {
-        return { success: false, error: 'Invalid or expired nonce' };
+        return { success: false, error: "Invalid or expired nonce" };
       }
 
       // Verify signature
       const result = await siweMessage.verify({ signature });
-      
+
       if (!result.success) {
-        return { success: false, error: 'Invalid signature' };
+        return { success: false, error: "Invalid signature" };
       }
 
       // Check expiration
-      if (siweMessage.expirationTime && new Date() > new Date(siweMessage.expirationTime)) {
-        return { success: false, error: 'Message expired' };
+      if (
+        siweMessage.expirationTime &&
+        new Date() > new Date(siweMessage.expirationTime)
+      ) {
+        return { success: false, error: "Message expired" };
       }
 
       return { success: true, data: siweMessage };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Verification failed' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Verification failed",
       };
     }
   }
