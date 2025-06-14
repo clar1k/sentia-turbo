@@ -20,7 +20,10 @@ const models: Record<Models, any> = {
 
 export type SupportedModel = keyof typeof models;
 
-type GenerateTextOptions = Omit<Parameters<typeof ai.generateText>[0], "model"> & {
+type GenerateTextOptions = Omit<
+  Parameters<typeof ai.generateText>[0],
+  "model"
+> & {
   modelName?: SupportedModel;
 };
 
