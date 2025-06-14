@@ -159,14 +159,13 @@ const defiRouter = router({
     return { ok: true, message };
   }),
 });
+import { newsRouter } from "./news.route";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   prompt: publicProcedure
     .input(type({ message: "string" }))
     .mutation(async (c) => {
-      const tools = new Tools().getTools();
-
       const text = await safeGenerateText({
         messages: [
           {
@@ -184,8 +183,8 @@ export const appRouter = router({
     }),
   wallets: walletRouter,
   auth: authRouter,
-  finance: financeRouter,
-  defi: defiRouter,
+  finance: financeRoute,
+  news: newsRouter,
 });
 
 export type AppRouter = typeof appRouter;
