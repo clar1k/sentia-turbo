@@ -48,7 +48,7 @@ function Providers({ children }: React.PropsWithChildren) {
           </DynamicWagmiConnector>
       </WagmiProvider>
     </DynamicContextProvider>
-  )
+  );
 }
 
 const router = createRouter({

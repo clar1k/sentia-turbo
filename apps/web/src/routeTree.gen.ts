@@ -8,104 +8,88 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as IndexRouteImport } from './routes/index'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as FinanceImport } from './routes/finance'
-import { Route as IndexImport } from './routes/index'
-
-// Create/Update Routes
-
-const FinanceRoute = FinanceImport.update({
+const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/finance': typeof FinanceRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/finance': typeof FinanceRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/finance': typeof FinanceRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/chat' | '/finance'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/chat' | '/finance'
+  id: '__root__' | '/' | '/chat' | '/finance'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  ChatRoute: typeof ChatRoute
+  FinanceRoute: typeof FinanceRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/finance': {
       id: '/finance'
       path: '/finance'
       fullPath: '/finance'
-      preLoaderRoute: typeof FinanceImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
-}
-
-// Create and export the route tree
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/finance': typeof FinanceRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/finance': typeof FinanceRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/finance': typeof FinanceRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/finance'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/finance'
-  id: '__root__' | '/' | '/finance'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  FinanceRoute: typeof FinanceRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatRoute: ChatRoute,
   FinanceRoute: FinanceRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/finance"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/finance": {
-      "filePath": "finance.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

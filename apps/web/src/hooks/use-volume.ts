@@ -1,30 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
 
 export function useGlobalVolume() {
-  const [volumeUsd, setVolumeUsd] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: volumeUsd,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["globalVolume"],
+    queryFn: async (): Promise<number | null> => {
+      const res = await fetch("https://api.coingecko.com/api/v3/global");
 
-  useEffect(() => {
-    const fetchGlobalVolume = async () => {
-      try {
-        const res = await fetch('https://api.coingecko.com/api/v3/global');
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const json = await res.json();
-        const volume = json?.data?.total_volume?.usd ?? null;
-        setVolumeUsd(volume);
-      } catch (err) {
-        console.error('Failed to fetch global volume:', err);
-        setError('Failed to fetch global volume');
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch global volume: ${res.status}`);
       }
-    };
 
-    fetchGlobalVolume();
-  }, []);
+      const json = await res.json();
+      return json?.data?.total_volume?.usd ?? null;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
-  return { volumeUsd, loading, error };
+  return {
+    volumeUsd: volumeUsd ?? null,
+    loading,
+    error: error?.message ?? null,
+  };
 }

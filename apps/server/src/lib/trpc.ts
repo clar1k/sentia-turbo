@@ -14,7 +14,7 @@ export const jwtService = new JWTService();
 // Middleware for protected routes
 const isAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.user) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+    throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
@@ -25,4 +25,3 @@ const isAuthed = t.middleware(({ ctx, next }) => {
 
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
-
