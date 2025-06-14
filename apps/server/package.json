@@ -30,6 +30,7 @@
     "intmax2-client-sdk": "^1.2.4",
     "intmax2-server-sdk": "^1.2.4",
     "neverthrow": "^8.2.0",
+    "node-cron": "^4.1.0",
     "pg": "^8.14.1",
     "redstone-api": "^0.4.13",
     "zod": "^3.25.16"
