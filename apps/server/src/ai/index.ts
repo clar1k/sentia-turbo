@@ -7,6 +7,7 @@ const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
 const models: Record<string, any> = {
   GPT_4_MINI: openrouter("openai/gpt-4.1-mini"),
+  GPT_O3: openrouter("openai/o3"),
   SONNET_4: openrouter("anthropic/claude-sonnet-4"),
 };
 
