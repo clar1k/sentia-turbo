@@ -8,6 +8,8 @@ import { logger } from "hono/logger";
 import {financeRoute} from "@/routers/finance.route";
 import cron from 'node-cron';
 import {finance} from "@/schedule/finance";
+import {defiRouters} from "@/routers/defi.routers";
+import {defi} from "@/schedule/defi";
 
 const app = new Hono();
 
@@ -35,10 +37,12 @@ app.get("/", (c) => {
 });
 
 app.route('/finance', financeRoute);
+app.route('/defi', defiRouters);
 
 cron.schedule('0 0 * * *', () => {
   console.error("START")
   finance().then(() => (console.log("DONE")));
+  defi().then(() => (console.log("DONE")));
 })
 
 export default app;
