@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, enum, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, jsonb, integer } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -6,11 +6,19 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+export const usersWallet = pgTable('usersWallets', {
+  id: serial('id').primaryKey(),
+  address: text('address').notNull(),
+  privateKey: text('privateKey').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  userId: integer('user_id').notNull().references(() => users.id),
+})
+
 export const contextData = pgTable('contexts', {
   id: serial('id').primaryKey(),
   createdAt: timestamp('created_at').defaultNow(),
   type: text('type').notNull(),
-  data: jsonb('daat').notNull(),
+  data: jsonb('data').notNull(),
 })
 
 export const chats = pgTable('chats', {

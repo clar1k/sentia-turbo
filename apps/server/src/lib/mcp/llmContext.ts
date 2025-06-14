@@ -2,7 +2,8 @@ import { db } from "@/db";
 import { DeFiModule } from "../modules/defi";
 import { PriceModule } from "../modules/price";
 import { contextData } from "@/db/schema";
-import { asc, eq, gte } from "drizzle-orm";
+import { gte } from "drizzle-orm";
+import { ContextsEnum } from "types";
 
 interface ContextGenerationOptions {
   include: ContextsEnum[];
@@ -22,7 +23,11 @@ export class LlmContext {
 
     if (options.include.includes(ContextsEnum.defi)) {
       const module = new DeFiModule();
-      result[ContextsEnum.defi] = module.getProtocolsData();
+      result[ContextsEnum.defi] = {
+        protocols: module.getDefaultProtocols(),
+        totalTvl: module.calculateTotalTvl(),
+        chain: module.getChainsTvl(),
+      };
     }
     if (options.include.includes(ContextsEnum.finance)) {
       const module = new PriceModule();
@@ -33,16 +38,22 @@ export class LlmContext {
     return result;
   }
 
+  async saveContext({ data, type }: { data: Record<string, any>, type: ContextsEnum }) {
+    await db.insert(contextData).values({ data, type });
+  }
+
   async getContext(options: GetContextOptions) {
     const deadlineTime = new Date(options.deadline);
     const cachedContexts = await db.select().from(contextData).where(gte(contextData.createdAt, deadlineTime));
     const cachedContext = cachedContexts.find(obj => obj.type === options.type.toString())
     console.log(cachedContexts);
     console.log(cachedContext);
+    
     let context: ContextType;
     if (!cachedContext) {
       const generatedContext = await this.generateContext({ include: [options.type] });
       context = generatedContext[options.type];
+      this.saveContext({ data: context, type: options.type });
     } else {
       context = cachedContext.data as ContextType;
     }
