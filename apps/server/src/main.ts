@@ -5,10 +5,9 @@ import { appRouter } from "./routers/index";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import {financeRoute} from "@/routers/finance.route";
-import cron from 'node-cron';
-import {finance} from "@/schedule/finance";
-import { defi } from "./schedule/defi";
+import cron from "node-cron";
+import { finance } from "@/schedule/finance";
+import { defi } from "@/schedule/defi";
 import { news } from "./schedule/news";
 
 const app = new Hono();
