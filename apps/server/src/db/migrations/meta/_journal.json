@@ -22,6 +22,13 @@
       "when": 1749855075907,
       "tag": "0002_fix-user-id-in-users-wallet",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1749900580597,
+      "tag": "0003_handy_ted_forrester",
+      "breakpoints": true
     }
   ]
 }
