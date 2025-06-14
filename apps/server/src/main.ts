@@ -40,7 +40,7 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-const topic = "";
+// const topic = "";
 
 // app.get(
 //   "/ws",
@@ -60,12 +60,11 @@ const topic = "";
 //   }),
 // );
 
-
-cron.schedule('0 0 * * *', () => {
+cron.schedule("0 0 * * *", () => {
   console.log("START");
-  finance().then(() => (console.log("finance DONE")));
-  defi().then(() => (console.log("defi DONE")));
-})
+  finance().then(() => console.log("finance DONE"));
+  defi().then(() => console.log("defi DONE"));
+});
 
 cron.schedule('*/30 * * * *', () => {
   coindeskNews().then(() => (console.log("news DONE")));

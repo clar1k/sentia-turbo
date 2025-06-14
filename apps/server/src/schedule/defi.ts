@@ -65,6 +65,7 @@ Do not ask for additional input or clarification.
     .prompt({ message });
 
   if (query.ok) {
+    // @ts-ignore
     const text = query?.text?.value?.text;
     console.log("✅ ChatGPT Insight:", text);
     await db.insert(defiSummary).values({ messages: text });

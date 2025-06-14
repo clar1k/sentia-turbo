@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "my-better-t-app",
+      "dependencies": {
+        "@hono/node-server": "^1.14.4",
+      },
       "devDependencies": {
         "turbo": "^2.4.2",
       },
