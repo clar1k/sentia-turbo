@@ -7,6 +7,8 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import cron from "node-cron";
 import { finance } from "@/schedule/finance";
+import {defiRouters} from "@/routers/defi.routers";
+import {defi} from "@/schedule/defi";
 
 const app = new Hono();
 
@@ -29,9 +31,17 @@ app.use(
   }),
 );
 
-cron.schedule("0 0 * * *", async () => {
-  console.log("START");
-  finance().then(() => console.log("DONE"));
+app.get("/", (c) => {
+  return c.text("OK");
 });
+
+app.route('/finance', financeRoute);
+app.route('/defi', defiRouters);
+
+cron.schedule('0 0 * * *', () => {
+  console.error("START")
+  finance().then(() => (console.log("DONE")));
+  defi().then(() => (console.log("DONE")));
+})
 
 export default app;
