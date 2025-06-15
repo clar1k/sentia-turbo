@@ -28,7 +28,10 @@ export function CustomDashboardSidebar() {
   return (
     <Sidebar className="border-r border-gray-200 bg-white duration-200 ease-in-out">
       <SidebarHeader className="border-b border-gray-200 bg-white pb-0">
-        <div className="flex items-center gap-2 px-4 py-3 pb-[11px] cursor-pointer" onClick={() => navigate({ to: "/" })}>
+        <div
+          className="flex cursor-pointer items-center gap-2 px-4 py-3 pb-[11px]"
+          onClick={() => navigate({ to: "/" })}
+        >
           <Bot className="h-8 w-8 text-blue-500" />
           <span className="text-xl font-bold text-gray-900">Sentia</span>
         </div>
@@ -97,17 +100,26 @@ export function CustomDashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
+                <SidebarMenuButton
+                  onClick={() => navigate({ to: "/news" })}
+                  className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500"
+                >
                   Latest News
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
+                <SidebarMenuButton
+                  onClick={() => navigate({ to: "/news" })}
+                  className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500"
+                >
                   Trending Topics
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
+                <SidebarMenuButton
+                  onClick={() => navigate({ to: "/news" })}
+                  className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500"
+                >
                   AI Analysis
                 </SidebarMenuButton>
               </SidebarMenuItem>
