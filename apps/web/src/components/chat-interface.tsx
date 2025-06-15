@@ -37,18 +37,19 @@ export function ChatInterface() {
   }
 
   return (
-    <SidebarProvider>
-      <ChatSidebar
-        chats={chats}
-        activeChat={activeChat}
-        onChatSelect={setActiveChat}
-        onCreateNewChat={createNewChat}
-        onDeleteChat={deleteChat}
-      />
+  <SidebarProvider>
+    <ChatSidebar
+      chats={chats}
+      activeChat={activeChat}
+      onChatSelect={setActiveChat}
+      onCreateNewChat={createNewChat}
+      onDeleteChat={deleteChat}
+    />
 
-      <SidebarInset className="relative flex h-screen flex-col overflow-auto bg-white">
-        <ChatHeader currentChatTitle={currentChat?.title} />
+    <SidebarInset className="relative flex h-screen flex-col bg-white">
+      <ChatHeader currentChatTitle={currentChat?.title} />
 
+      <div className="flex-1 overflow-y-auto pt-14">
         <ChatMessages
           currentChat={currentChat}
           isTyping={isTyping}
@@ -56,17 +57,18 @@ export function ChatInterface() {
           messagesEndRef={messagesEndRef}
           onCreateNewChat={createNewChat}
         />
+      </div>
 
-        <ChatInput
-          input={input}
-          activeChat={activeChat}
-          isTyping={isTyping}
-          isPending={isPending}
-          onInputChange={setInput}
-          onSendMessage={sendMessage}
-          onKeyPress={handleKeyPress}
-        />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+      <ChatInput
+        input={input}
+        activeChat={activeChat}
+        isTyping={isTyping}
+        isPending={isPending}
+        onInputChange={setInput}
+        onSendMessage={sendMessage}
+        onKeyPress={handleKeyPress}
+      />
+    </SidebarInset>
+  </SidebarProvider>
+);
 }

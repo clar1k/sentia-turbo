@@ -13,12 +13,20 @@ import { financeRouter } from "@/routers/finance.route";
 import { walletRouter } from "./wallet.route";
 import { authRouter } from "./auth.route";
 import { defiRouter } from "./defi.route";
+import z from "zod";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   prompt: protectedProcedure
-    .input(type({ message: "string" }))
+    .input(z.object({
+      message: z.string(),
+      options: z.record(z.string()).optional(),
+    }))
     .mutation(async (c) => {
+      const toolOptions = {
+        userAddress: c.input.options?.from as `0x${string}`,
+        ...c.input.options
+      };
       const text = await safeGenerateText({
         messages: [
           {
@@ -26,7 +34,7 @@ export const appRouter = router({
             content: c.input.message,
           },
         ],
-        tools: new Tools().getTools(),
+        tools: new Tools(toolOptions).getTools(),
       });
 
       if (text.isErr()) {

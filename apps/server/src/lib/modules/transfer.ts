@@ -32,13 +32,14 @@ export class TransferModule {
 
   async generateTxForUser({ recipient, amount, from }: GenerateTxForUserOptions) {
     let receipientAddress: string | null = recipient;
+    let userBalance: number | null = null;
     if (from) {
       const userBalance = await this.getEtherBalance({ address: from });
       if (userBalance < amount) { 
         throw new Error("Insufficient balance!");
       }
     }
-    if (recipient.includes(".eth")) {
+    if (recipient.endsWith(".eth")) {
       receipientAddress = await getEnsAddress(ethereumClient, { name: recipient });
     }
     if (!ethers.isAddress(receipientAddress)) {
@@ -48,12 +49,12 @@ export class TransferModule {
     const valueInWei = ethers.parseEther(amount.toString());
 
     const txData = {
-      to: recipient,
+      to: receipientAddress,
       from,
       value: valueInWei.toString(),
       gasLimit: '21000',
       chainId: base.id,  // Base for now
     }
-    return txData;
+    return { data: txData, balance: userBalance };
   }
 }

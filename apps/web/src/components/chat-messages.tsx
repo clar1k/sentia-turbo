@@ -3,6 +3,7 @@ import { Bot, User, Plus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { InlineRouter } from "./inline-components/inlineRouter";
 
 interface Message {
   id: string;
@@ -87,7 +88,7 @@ export function ChatMessages({
                   }`}
                 >
                   <div className="text-sm whitespace-pre-wrap">
-                    {message.content}
+                    <InlineRouter message={message.content} />
                   </div>
                   <div
                     className={`mt-1 text-xs opacity-70 ${

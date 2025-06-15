@@ -18,6 +18,7 @@
     "@hono/node-server": "^1.14.4",
     "@hono/node-ws": "^1.1.7",
     "@hono/trpc-server": "^0.3.4",
+    "@lifi/widget": "^3.23.3",
     "@openrouter/ai-sdk-provider": "^0.7.1",
     "@trpc/client": "^11.0.0",
     "@trpc/server": "^11.0.0",

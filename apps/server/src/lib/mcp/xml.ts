@@ -1,3 +1,3 @@
 export const wrapInTag = (data: any, tag: string) => {
-  return `<${tag}>` + `  ${data}` + `</${tag}>`;
+  return `<${tag}>\n${data}\n</${tag}>`;
 };

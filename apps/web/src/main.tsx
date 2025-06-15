@@ -17,6 +17,7 @@ import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-q
 import { queryClient, trpc } from "./utils/trpc";
 import type React from "react";
 import { toast } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 const config = createConfig({
   chains: [base],
@@ -59,9 +60,12 @@ const router = createRouter({
   Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={dynamicQueryClient}>
-        <Providers>
-          {children}
-        </Providers>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <Providers>
+            {children}
+          </Providers>
+        </ThemeProvider>
+      
       </QueryClientProvider>
     );
   },
