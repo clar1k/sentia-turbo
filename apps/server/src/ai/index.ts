@@ -1,8 +1,9 @@
 import { env } from "@/env";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { ResultAsync } from "neverthrow";
+import { Result, ResultAsync } from "neverthrow";
 import * as ai from "ai";
 import { Tools } from "@/lib/mcp/tools";
+import type { streamText } from "ai";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
@@ -27,14 +28,50 @@ type GenerateTextOptions = Omit<
   modelName?: SupportedModel;
 };
 
+type StreamTextOptions = Omit<
+  Parameters<typeof streamText>[0],
+  "model"
+> & {
+  modelName?: SupportedModel;
+};
+
 export const safeGenerateText = async (options: GenerateTextOptions) => {
   const model = models[options.modelName ?? "GPT_4_MINI"];
+  
   return ResultAsync.fromPromise(
     ai.generateText({
       model,
-      tools: new Tools().getTools(),
       ...options,
     }),
     (error) => error as ai.AISDKError | ai.APICallError,
-  );
+  ).map((result) => {
+    console.log('toolResults:', result.toolResults);
+
+    if (result.toolResults && result.toolResults.length > 0) {
+      const toolOutputs = result.toolResults
+        .map((toolResult) => (toolResult as any).result) // TODO: FIX this. Idk why it has type never
+        .join('\n\n');
+      
+      return {
+        ...result,
+        text: result.text + '\n\n' + toolOutputs
+      };
+    }
+
+    return result;
+  });
+};
+
+
+const throwableStreamText = Result.fromThrowable(
+  ai.streamText,
+  (error) => error as ai.AISDKError,
+);
+
+export const safeStreamText = (options: StreamTextOptions) => {
+  const model = models[options.modelName ?? "GPT_4_MINI"];
+  return throwableStreamText({
+      model,
+      ...options,
+    })
 };

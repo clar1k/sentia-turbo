@@ -3,16 +3,19 @@ import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@/utils/trpc";
 import { toast } from "sonner";
 import { mockAPI, type Message, type Chat } from "@/utils/mock-api";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 export function useChatInterface() {
   const [chats, setChats] = React.useState<Chat[]>([]);
   const [activeChat, setActiveChat] = React.useState<string>("");
   const [input, setInput] = React.useState("");
+  const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const [isTyping, setIsTyping] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const promptMutation = useMutation(trpc.prompt.mutationOptions());
   const currentChat = chats.find((chat) => chat.id === activeChat);
+  const { primaryWallet, user } = useDynamicContext();
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -80,6 +83,13 @@ export function useChatInterface() {
     if (!input.trim() || !activeChat || isTyping || promptMutation.isPending)
       return;
 
+    const authTokenExists = !!localStorage.getItem("dynamic_authentication_token");
+    console.log()
+    if (!await primaryWallet?.isConnected() || !authTokenExists) {
+      toast.error("Connect wallet and sign message first");
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input.trim(),
@@ -111,8 +121,13 @@ export function useChatInterface() {
     setIsTyping(true);
 
     try {
+      const options: Record<string, string> = {};
+      if (primaryWallet?.address) {
+        options.userAddress = primaryWallet.address;
+      }
       const response = await promptMutation.mutateAsync({
         message: messageContent,
+        options,
       });
 
       // Check if the response is an error
@@ -120,6 +135,8 @@ export function useChatInterface() {
         toast.error("Failed to get AI response");
         return;
       }
+
+      console.log("RESPONSE", response, "text" in response);
 
       // Create AI message with the response
       const aiMessage: Message = {
@@ -156,6 +173,9 @@ export function useChatInterface() {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      if (inputRef && inputRef.current) {
+        inputRef.current.blur();
+      }
       sendMessage();
     }
   };
@@ -169,6 +189,7 @@ export function useChatInterface() {
     isLoading,
     currentChat,
     messagesEndRef,
+    inputRef,
 
     // Mutation state
     isPending: promptMutation.isPending,

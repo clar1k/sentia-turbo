@@ -4,6 +4,11 @@ import { TransferModule } from "../modules/transfer";
 import { wrapInTag } from "./xml";
 
 export class Tools {
+  constructor(private options: {
+    userAddress?: `0x${string}`;
+    [key: string]: any;
+  } = {}) {}
+
   getTools(): ToolSet {
     return {
       swap: tool({
@@ -11,6 +16,7 @@ export class Tools {
         parameters: z.object({
           recipient: z
             .string()
+            .transform((val) => val as `0x${string}`)
             .describe(
               "The transfer receipient. Ethereum address (starts with 0x...) or ENS domain `name.eth`",
             ),
@@ -19,9 +25,10 @@ export class Tools {
             .describe("The ETH transfer amount. For example: `0.15`"),
         }),
         execute: async (args) => {
-          const txData = new TransferModule().generateTxForUser(args);
-          const txDataJson = JSON.stringify(txData, null, 2);
-          return wrapInTag(txDataJson, "tx");
+          const txData = await new TransferModule().generateTxForUser({ ...args, from: this.options.userAddress });
+          const txDataJson = JSON.stringify(txData);
+          const wrapped = wrapInTag(txDataJson, "tx");
+          return wrapped
         },
       }),
     }
