@@ -9,6 +9,7 @@ export function useChatInterface() {
   const [chats, setChats] = React.useState<Chat[]>([]);
   const [activeChat, setActiveChat] = React.useState<string>("");
   const [input, setInput] = React.useState("");
+  const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const [isTyping, setIsTyping] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
@@ -83,7 +84,8 @@ export function useChatInterface() {
       return;
 
     const authTokenExists = !!localStorage.getItem("dynamic_authentication_token");
-    if (await primaryWallet?.isConnected() || !authTokenExists) {
+    console.log()
+    if (!await primaryWallet?.isConnected() || !authTokenExists) {
       toast.error("Connect wallet and sign message first");
       return;
     }
@@ -171,6 +173,9 @@ export function useChatInterface() {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      if (inputRef && inputRef.current) {
+        inputRef.current.blur();
+      }
       sendMessage();
     }
   };
@@ -184,6 +189,7 @@ export function useChatInterface() {
     isLoading,
     currentChat,
     messagesEndRef,
+    inputRef,
 
     // Mutation state
     isPending: promptMutation.isPending,

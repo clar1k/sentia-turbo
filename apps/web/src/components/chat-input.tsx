@@ -8,6 +8,7 @@ interface ChatInputProps {
   activeChat: string;
   isTyping: boolean;
   isPending: boolean;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
   onKeyPress: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -18,16 +19,19 @@ export function ChatInput({
   activeChat,
   isTyping,
   isPending,
+  inputRef,
   onInputChange,
   onSendMessage,
   onKeyPress,
 }: ChatInputProps) {
   const isDisabled = !activeChat || isTyping || isPending;
+  const testRef = React.useRef(null);
 
   return (
     <div className="w-full border-t border-border bg-background p-4">
       <div className="mx-auto flex w-full max-w-4xl items-center gap-2 justify-center">
         <Textarea
+          ref={inputRef}
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyUp={onKeyPress}

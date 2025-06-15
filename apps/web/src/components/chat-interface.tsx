@@ -17,6 +17,7 @@ export function ChatInterface() {
     currentChat,
     messagesEndRef,
     isPending,
+    inputRef,
     setActiveChat,
     setInput,
     createNewChat,
@@ -60,6 +61,7 @@ export function ChatInterface() {
       </div>
 
       <ChatInput
+        inputRef={inputRef}
         input={input}
         activeChat={activeChat}
         isTyping={isTyping}
