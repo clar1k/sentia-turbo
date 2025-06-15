@@ -3,7 +3,7 @@ import { Bot, User, Plus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { InlineRouter } from "./inline-components/inlineRouter";
+import { InlineRouter } from "./inline-components/InlineRouter";
 
 interface Message {
   id: string;

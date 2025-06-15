@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as DefiRouteImport } from './routes/defi'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/defi': typeof DefiRoute
   '/finance': typeof FinanceRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/defi' | '/finance'
+  fullPaths: '/' | '/chat' | '/defi' | '/finance' | '/news'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/defi' | '/finance'
-  id: '__root__' | '/' | '/chat' | '/defi' | '/finance'
+  to: '/' | '/chat' | '/defi' | '/finance' | '/news'
+  id: '__root__' | '/' | '/chat' | '/defi' | '/finance' | '/news'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +76,18 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   DefiRoute: typeof DefiRoute
   FinanceRoute: typeof FinanceRoute
+  NewsRoute: typeof NewsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/finance': {
       id: '/finance'
       path: '/finance'
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   DefiRoute: DefiRoute,
   FinanceRoute: FinanceRoute,
+  NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

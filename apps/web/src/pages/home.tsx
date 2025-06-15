@@ -4,6 +4,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { CustomDashboardSidebar } from "@/components/custom-dashboard-sidebar";
+import { Link } from "@tanstack/react-router";
 
 export const Home = () => {
   return (
@@ -20,9 +21,51 @@ export const Home = () => {
             <h1 className="mb-4 text-3xl font-bold text-gray-900">
               Welcome to Sentia Dashboard
             </h1>
-            <p className="text-blue-500">
+            <p className="mb-8 text-blue-500">
               Your AI-powered finance and news intelligence platform
             </p>
+
+            <div className="grid max-w-2xl grid-cols-1 gap-6 md:grid-cols-2">
+              <Link
+                to="/defi"
+                className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:border-blue-300 hover:shadow-md"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
+                      DeFi Dashboard
+                    </h3>
+                    <p className="mt-2 text-gray-600">
+                      Explore decentralized finance protocols, TVL data, and
+                      DeFi market insights
+                    </p>
+                  </div>
+                  <div className="ml-4 flex-shrink-0 text-blue-500 transition-colors group-hover:text-blue-600">
+                    →
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                to="/finance"
+                className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:border-blue-300 hover:shadow-md"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
+                      Finance Dashboard
+                    </h3>
+                    <p className="mt-2 text-gray-600">
+                      Access comprehensive financial data, market analysis, and
+                      trading insights
+                    </p>
+                  </div>
+                  <div className="ml-4 flex-shrink-0 text-blue-500 transition-colors group-hover:text-blue-600">
+                    →
+                  </div>
+                </div>
+              </Link>
+            </div>
           </div>
         </SidebarInset>
       </div>
