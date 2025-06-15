@@ -26,7 +26,7 @@ export const appRouter = router({
       const toolOptions = {
         userAddress: c.input.options?.from as `0x${string}`,
         ...c.input.options
-      };
+      }; 
       const text = await safeGenerateText({
         messages: [
           {
@@ -38,6 +38,7 @@ export const appRouter = router({
       });
 
       if (text.isErr()) {
+        console.log(text);
         return errorResponse(text.error, ErrorCode.PROMPT_ERROR);
       }
 

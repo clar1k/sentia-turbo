@@ -1,5 +1,6 @@
 import {
   useAccount,
+  useBalance,
   useSendTransaction,
   useWaitForTransactionReceipt,
   useChains,
@@ -22,6 +23,7 @@ import {
   XCircle,
   ArrowRight,
   Link2,
+  AlertTriangle,
 } from "lucide-react";
 
 export interface TransactionData {
@@ -40,8 +42,10 @@ const truncateAddress = (address: string) => {
 };
 
 export function TransactionCard({ txData }: TransactionCardProps) {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { setShowAuthFlow } = useDynamicContext();
+
+  const { data: balanceData } = useBalance({ address });
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -54,10 +58,13 @@ export function TransactionCard({ txData }: TransactionCardProps) {
   const currentChain = chains.find((chain) => chain.id === chainId);
   const explorerUrl = currentChain?.blockExplorers?.default.url;
 
+  const txValue = BigInt(txData.value);
+  const hasSufficientBalance = balanceData ? balanceData.value >= txValue : false;
+
   const handleSign = () => {
     sendTransaction({
       to: txData.to,
-      value: BigInt(txData.value),
+      value: txValue,
       data: txData.data,
     });
   };
@@ -70,11 +77,11 @@ export function TransactionCard({ txData }: TransactionCardProps) {
           Transaction Request
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm space-x-8">
+      <CardContent className="space-y-2">
+        <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm">
           <div className="text-sm font-medium text-gray-500">Amount</div>
           <div className="text-lg font-semibold text-gray-900">
-            {formatEther(BigInt(txData.value))} ETH
+            {formatEther(txValue)} ETH
           </div>
         </div>
         <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm">
@@ -84,6 +91,14 @@ export function TransactionCard({ txData }: TransactionCardProps) {
             <ArrowRight className="h-4 w-4 text-gray-400" />
           </div>
         </div>
+        {isConnected && balanceData && (
+          <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm">
+            <div className="text-sm font-medium text-gray-500">Balance</div>
+            <div className="text-sm font-semibold text-gray-700">
+              {parseFloat(balanceData.formatted).toFixed(4)} {balanceData.symbol}
+            </div>
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex flex-col items-stretch">
         {!isConnected ? (
@@ -122,15 +137,22 @@ export function TransactionCard({ txData }: TransactionCardProps) {
         ) : (
           <Button
             onClick={handleSign}
-            className="w-full bg-blue-500 hover:bg-blue-600"
+            className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300"
           >
             Sign Transaction
           </Button>
         )}
 
+        {isConnected && !hasSufficientBalance && !isConfirmed && (
+          <div className="mt-2 flex items-center justify-center text-xs text-yellow-600">
+            <AlertTriangle className="mr-1 h-4 w-4" />
+            Insufficient balance
+          </div>
+        )}
+
         {error && (
           <div className="mt-2 text-center text-xs text-red-500">
-            <p>Error: {error.message}</p>
+            <p>Error: {serror.message}</p>
           </div>
         )}
       </CardFooter>

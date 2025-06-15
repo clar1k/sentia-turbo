@@ -23,9 +23,10 @@ export function InlineRouter({ message }: InlineRouterProps) {
           if (txDataString) {
             try {
               console.log(txDataString);
-              const txData: TransactionData = JSON.parse(txDataString);
+              const txData: TransactionData = JSON.parse(txDataString).data;
+              console.log(txData);
               if (!txData || Object.keys(txData).length == 0) {
-                throw new Error("Failed to parse txData");
+                throw new Error("Failed to parse txData")
               }
               return <TransactionCard key={index} txData={txData} />;
             } catch (error) {

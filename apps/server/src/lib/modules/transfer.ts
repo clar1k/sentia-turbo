@@ -33,12 +33,12 @@ export class TransferModule {
   async generateTxForUser({ recipient, amount, from }: GenerateTxForUserOptions) {
     let receipientAddress: string | null = recipient;
     let userBalance: number | null = null;
-    if (from) {
-      const userBalance = await this.getEtherBalance({ address: from });
-      if (userBalance < amount) { 
-        throw new Error("Insufficient balance!");
-      }
-    }
+    // if (from) {
+    //   const userBalance = await this.getEtherBalance({ address: from });
+    //   if (userBalance < amount) { 
+    //     throw new Error("Insufficient balance!");
+    //   }
+    // }
     if (recipient.endsWith(".eth")) {
       receipientAddress = await getEnsAddress(ethereumClient, { name: recipient });
     }
