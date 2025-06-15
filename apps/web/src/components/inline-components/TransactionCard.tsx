@@ -152,7 +152,7 @@ export function TransactionCard({ txData }: TransactionCardProps) {
 
         {error && (
           <div className="mt-2 text-center text-xs text-red-500">
-            <p>Error: {serror.message}</p>
+            <p>Error: {error.message}</p>
           </div>
         )}
       </CardFooter>

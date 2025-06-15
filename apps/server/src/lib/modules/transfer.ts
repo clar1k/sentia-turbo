@@ -26,8 +26,8 @@ const baseClient = createPublicClient({
 export class TransferModule {
   async getEtherBalance({ address }: GetEtherBalanceOptions) {
     const rawBalance = await baseClient.getBalance({ address });
-    const userBalance = parseInt(formatEther(rawBalance));
-    return userBalance;
+    const userBalance = parseFloat(formatEther(rawBalance));
+    return userBalance.toFixed(6);
   }
 
   async generateTxForUser({ recipient, amount, from }: GenerateTxForUserOptions) {

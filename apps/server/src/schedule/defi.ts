@@ -1,6 +1,7 @@
 import { appRouter } from "@/routers";
 import { db } from "@/db";
 import { defiSummary, financeSummary } from "@/db/schema";
+import { safeGenerateText } from "@/ai";
 
 export async function defi() {
   const totalDexVolumeResponse = await fetch(
@@ -60,18 +61,21 @@ Do not ask for additional input or clarification.
   console.error("totalTVL:", totalTVL);
   console.error("currentChainTvls", currentChainTvls);
 
-  const query = await appRouter
-    .createCaller({ user: null, dynamicPayload: null })
-    .prompt({ message });
+  const query = await safeGenerateText({ messages: [
+    {
+      role: "user",
+      content: message,
+    }
+  ] });
 
-  if (query.ok) {
+  if (!query.isErr()) {
     // @ts-ignore
     const text = query?.text?.value?.text;
     console.log("✅ ChatGPT Insight:", text);
     await db.insert(defiSummary).values({ messages: text });
     return text;
   } else {
-    console.error("❌ Prompt Error:", query);
+  console.error("❌ Prompt Error:", query.error);
     return "please try again";
   }
 }

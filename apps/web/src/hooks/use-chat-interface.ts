@@ -125,8 +125,15 @@ export function useChatInterface() {
       if (primaryWallet?.address) {
         options.userAddress = primaryWallet.address;
       }
+      const aiChats = localStorage.getItem("ai-chats");
+      let parsedChats: Record<string, string>[] | undefined = undefined;
+      console.log(aiChats)
+      if (aiChats) {
+        parsedChats = JSON.parse(aiChats).find((i: Record<string, string>) => i.id == activeChat).messages;
+      }
       const response = await promptMutation.mutateAsync({
         message: messageContent,
+        messages: parsedChats,
         options,
       });
 

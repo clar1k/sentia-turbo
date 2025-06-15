@@ -14,12 +14,14 @@ import { walletRouter } from "./wallet.route";
 import { authRouter } from "./auth.route";
 import { defiRouter } from "./defi.route";
 import z from "zod";
+import { systemPrompt } from "@/lib/prompts/system";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   prompt: protectedProcedure
     .input(z.object({
       message: z.string(),
+      messages: z.array(z.record(z.string())).optional(),
       options: z.record(z.string()).optional(),
     }))
     .mutation(async (c) => {
@@ -34,6 +36,7 @@ export const appRouter = router({
             content: c.input.message,
           },
         ],
+        system: systemPrompt(),
         tools: new Tools(toolOptions).getTools(),
       });
 

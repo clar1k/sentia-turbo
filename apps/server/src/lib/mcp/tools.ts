@@ -11,8 +11,8 @@ export class Tools {
 
   getTools(): ToolSet {
     return {
-      swap: tool({
-        description: "Generates send (transfer) transaction by user message",
+      transfer: tool({
+        description: "Generates send (transfer) transaction by user message. Don't check balance before transfer",
         parameters: z.object({
           recipient: z
             .string()
@@ -31,6 +31,15 @@ export class Tools {
           return wrapped
         },
       }),
+      fetchBalance: tool({
+        description: "Fetchs ETH balance of user current address",
+        parameters: z.object({}),
+        execute: async (args) => {
+          if (!this.options.userAddress) throw new Error("Failed to get balance");
+          const userBalance = await new TransferModule().getEtherBalance({ address: this.options.userAddress });
+          return `Your current balance: ${userBalance} ETH`;
+        }
+      })
     }
   }
 }
