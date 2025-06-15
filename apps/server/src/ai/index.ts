@@ -2,7 +2,6 @@ import { env } from "@/env";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { Result, ResultAsync } from "neverthrow";
 import * as ai from "ai";
-import { Tools } from "@/lib/mcp/tools";
 import type { streamText } from "ai";
 
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
@@ -48,13 +47,14 @@ export const safeGenerateText = async (options: GenerateTextOptions) => {
     console.log('toolResults:', result.toolResults);
 
     if (result.toolResults && result.toolResults.length > 0) {
+      const joinSymbol = result.text.length > 1 ? "\n\n" : "";
       const toolOutputs = result.toolResults
         .map((toolResult) => (toolResult as any).result) // TODO: FIX this. Idk why it has type never
-        .join('\n\n');
+        .join("\n")
       
       return {
         ...result,
-        text: result.text + '\n\n' + toolOutputs
+        text: result.text + joinSymbol + toolOutputs
       };
     }
 

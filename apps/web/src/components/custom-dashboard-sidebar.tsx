@@ -20,13 +20,15 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { motion } from "motion/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export function CustomDashboardSidebar() {
+  const navigate = useNavigate();
+
   return (
     <Sidebar className="border-r border-gray-200 bg-white duration-200 ease-in-out">
       <SidebarHeader className="border-b border-gray-200 bg-white pb-0">
-        <div className="flex items-center gap-2 px-4 py-3 pb-[11px]">
+        <div className="flex items-center gap-2 px-4 py-3 pb-[11px] cursor-pointer" onClick={() => navigate({ to: "/" })}>
           <Bot className="h-8 w-8 text-blue-500" />
           <span className="text-xl font-bold text-gray-900">Sentia</span>
         </div>
@@ -119,24 +121,18 @@ export function CustomDashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
-                  <Link to="/finance">Market Trends</Link>
-                </SidebarMenuButton>
+                <Link to="/finance">
+                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
+                    Market Trends
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
-                  Protocol Updates
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
-                  DeFi News
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
-                  Yield Farming
-                </SidebarMenuButton>
+                <Link to="/defi">
+                  <SidebarMenuButton className="ml-4 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-500">
+                    DeFi News
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

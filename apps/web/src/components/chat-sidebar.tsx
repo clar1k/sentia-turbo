@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChatTabItem } from "@/components/chat-tab-item";
 import { CustomButton } from "@/components/shared/custom-button";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Chat {
   id: string;
@@ -38,10 +39,11 @@ export function ChatSidebar({
   onCreateNewChat,
   onDeleteChat,
 }: ChatSidebarProps) {
+  const navigate = useNavigate();
   return (
     <Sidebar className="border-r border-gray-200 bg-white duration-200 ease-in-out">
       <SidebarHeader className="bg-white">
-        <div className="flex items-center gap-2 px-2 py-2">
+        <div className="flex items-center gap-2 px-2 py-2 cursor-pointer" onClick={() => navigate({ to: "/" })}>
           <Bot className="h-6 w-6 text-blue-500" />
           <span className="font-semibold text-gray-900">Sentia Supreme</span>
         </div>
